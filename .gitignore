@@ -1,0 +1,7 @@
+
+.idea/*
+node_modules/
+build/
+yarn-error.log
+package-lock.json
+src/**/*.css
