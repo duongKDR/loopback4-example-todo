@@ -62,12 +62,18 @@ let UserController = class UserController {
     }
     async login(credentials) {
         // ensure the user exists, and the password is correct
+        const email = await this.userRepository.find({ where: { email: credentials.email } });
+        if (!email) {
+            throw new rest_1.HttpErrors.PreconditionFailed('Tai khoan bi sai');
+        }
         const user = await this.userService.verifyCredentials(credentials);
         // convert a User object into a UserProfile object (reduced set of properties)
         const userProfile = this.userService.convertToUserProfile(user);
         // create a JSON Web Token based on the user profile
         const token = await this.jwtService.generateToken(userProfile);
         return { token };
+        //   Nếu tài khoản và password không đúng trong cơ sở dữ liệu thị
+        // Sai:"Đăng nhập không thành công. Vui lòng kiểm tra tên đăng nhập và mật khẩu."
     }
     async whoAmI(currentUserProfile) {
         return currentUserProfile[security_1.securityId];
@@ -76,12 +82,18 @@ let UserController = class UserController {
         if (newUserRequest.emai.length < 1) {
             throw new rest_1.HttpErrors.PreconditionFailed('Tai khoan chua du so');
         }
+        if (newUserRequest.emai.length > 20) {
+            throw new rest_1.HttpErrors.PreconditionFailed('Tai khoan thua du so');
+        }
         console.log("🚀 ~ file: user.controller.ts ~ line 160 ~ UserController ~ newUserRequest", newUserRequest);
         const email = await this.userRepository.find({ where: { email: newUserRequest.email }, limit: 1 });
         if (email) {
             throw new rest_1.HttpErrors.BadRequest('Tai khoan da duoc dang ki');
         }
         const password = await (0, bcryptjs_1.hash)(newUserRequest.password, await (0, bcryptjs_1.genSalt)());
+        if (newUserRequest.password.length > 8) {
+            throw new rest_1.HttpErrors.PreconditionFailed('Mat khau qua ngan');
+        }
         const savedUser = await this.userRepository.create(lodash_1.default.omit(newUserRequest, 'password'));
         await this.userRepository.userCredentials(savedUser.id).create({ password });
         return savedUser;
