@@ -26,6 +26,7 @@
   },
   "scripts": {
     "build": "lb-tsc",
+    "heroku-postbuild": "npm run build",
     "build:watch": "lb-tsc --watch",
     "clean": "lb-clean *example-todo*.tgz dist *.tsbuildinfo package",
     "lint": "npm run prettier:check && npm run eslint",
@@ -49,7 +50,7 @@
   },
   "publishConfig": {
     "access": "public"
-  }, 
+  },
   "dependencies": {
     "@loopback/authentication": "^9.0.2",
     "@loopback/authentication-jwt": "^0.12.2",
@@ -77,5 +78,4 @@
     "typescript": "~4.7.4"
   },
   "gitHead": "d2eddfc1319810f4c0126e613c24499b5685f7e4"
-
 }
