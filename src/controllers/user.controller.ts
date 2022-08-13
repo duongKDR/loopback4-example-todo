@@ -187,7 +187,7 @@ export class UserController {
 
     const password = await hash(newUserRequest.password, await genSalt());
     if (newUserRequest.password.length > 8) {
-      throw new HttpErrors.PreconditionFailed('Mat khau qua ngan');9
+      throw new HttpErrors.PreconditionFailed('Mat khau qua ngan');
 
     }
     const savedUser = await this.userRepository.create(
